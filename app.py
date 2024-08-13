@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
-# from langchain_community.llms import Ollama
 from langchain_community.vectorstores import Chroma
 from langchain_community.llms import HuggingFacePipeline
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -82,7 +81,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Call this function when your application starts
 init_db()
 
 def store_chat_session(chat_thread_id, asset_id):
@@ -148,7 +146,7 @@ def pdfPost():
     response_dict = {}
     pdfProcess(response_dict)
     return jsonify(response_dict)
-    # return jsonify({"message": "Documents processed and embeddings created successfully."})
+    
 
 @app.route("/api/chat/start", methods=["POST"])
 def startChat():

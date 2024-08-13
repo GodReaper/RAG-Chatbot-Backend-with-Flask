@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "54d2a885-de4a-4360-b2d0-847a902c7144",
+		"name": "Rag chatbot backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34158042"
+	},
+	"item": [
+		{
+			"name": "Chat History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/chat/history?chat_thread_id=d86a347f-36f7-4343-98e6-b9a27ddb2e94",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chat",
+						"history"
+					],
+					"query": [
+						{
+							"key": "chat_thread_id",
+							"value": "d86a347f-36f7-4343-98e6-b9a27ddb2e94"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"bot_response": "Traditional firewall systems are inadequate in the face of the growing sophistication and complexity of intrusions.",
+					"user_message": "what is inadequate ?"
+				}
+			]
+		},
+		{
+			"name": "Message Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"chat_thread_id\": \"d86a347f-36f7-4343-98e6-b9a27ddb2e94\",\r\n    \"query\": \"what is inadequate ?\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/chat/message",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chat",
+						"message"
+					]
+				}
+			},
+			"response": [
+				{
+					"answer": "Traditional firewall systems are inadequate in the face of the growing sophistication and complexity of intrusions.",
+					"sources": [
+						{
+							"page_content": "AI Based Network Firewall\nCHAPTER 2: PROBLEM DEFINITION\nTraditional firewall systems are inadequate in the face of the growing sophistication\nand complexity of intrusions. Using rule-based engines, these systems filter network\ntraffic and prevent unauthorized or malicious access to the internal network.\nNonetheless, rule-based algorithms have the following limitations:\n• They cannot recognize new and emergent threats that do not match any\npredefined criteria.\n• They can generate false positives, which can impede legitimate traffic and cause\nuser dissatisfaction and decreased productivity.\n• They can be circumvented by attackers employing encryption, obfuscation, or\nother evasion techniques.\nTherefore, organizations must implement firewalls with a higher level of sophistication\nthat provide enhanced protection against intrusions. These systems should be able to:\n• Examine network traffic at a finer level, such as the application layer or the\npayload layer, to identify malicious behaviour and content.",
+							"source": "docs/1-3.pdf"
+						},
+						{
+							"page_content": "payload layer, to identify malicious behaviour and content.\n• Utilize machine learning, artificial intelligence, or other techniques to glean\nintelligence from network data and adapt to evolving threats.\n• Integrate with additional security solutions, such as antivirus, intrusion\ndetection and prevention, or security information and event management\n(SIEM), to provide a comprehensive defense.\n3",
+							"source": "docs/1-3.pdf"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Chat start req",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\"asset_id\": \"6bbe72f0-ed1c-4376-b274-c26b2c0e3780\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/chat/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chat",
+						"start"
+					]
+				}
+			},
+			"response": [
+				{
+					"chat_thread_id": "d86a347f-36f7-4343-98e6-b9a27ddb2e94"
+				}
+			]
+		},
+		{
+			"name": "Doc Process Req",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/F:/New folder/Projects/Python/RAG Chatbot with Doc embeddings/docs/1-3.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/documents/process",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"documents",
+						"process"
+					]
+				}
+			},
+			"response": [
+				{
+					"asset_id": "6bbe72f0-ed1c-4376-b274-c26b2c0e3780",
+					"chunks": 2,
+					"doc_len": 1,
+					"filename": "1-3.pdf",
+					"status": "Successfully Uploaded"
+				}
+			]
+		}
+	]
+}
