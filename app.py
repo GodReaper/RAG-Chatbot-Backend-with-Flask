@@ -69,6 +69,15 @@ def init_db():
             asset_id TEXT NOT NULL
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chat_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chat_thread_id TEXT NOT NULL,
+            user_message TEXT,
+            bot_response TEXT,
+            FOREIGN KEY (chat_thread_id) REFERENCES chat_sessions (chat_thread_id)
+        )
+    ''')
     
     conn.commit()
     conn.close()
@@ -88,7 +97,7 @@ def store_chat_session(chat_thread_id, asset_id):
     
     conn.commit()
     conn.close()
-import sqlite3
+
 
 def get_asset_id_by_chat_thread_id(chat_thread_id):
     conn = sqlite3.connect('chat_data.db')
@@ -106,7 +115,33 @@ def get_asset_id_by_chat_thread_id(chat_thread_id):
         return result[0]  # Return the asset_id
     else:
         return None  # Handle the case where the chat_thread_id is not found
+    
+def store_chat_message(chat_thread_id, user_message, bot_response):
+    conn = sqlite3.connect('chat_data.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        INSERT INTO chat_history (chat_thread_id, user_message, bot_response)
+        VALUES (?, ?, ?)
+    ''', (chat_thread_id, user_message, bot_response))
+    
+    conn.commit()
+    conn.close()
 
+def get_chat_history(chat_thread_id):
+    conn = sqlite3.connect('chat_data.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT user_message, bot_response FROM chat_history
+        WHERE chat_thread_id = ?
+        ORDER BY id
+    ''', (chat_thread_id,))
+    
+    result = cursor.fetchall()
+    conn.close()
+    
+    return result
 
 @app.route("/api/documents/process", methods=["POST"])
 def pdfPost():
@@ -178,7 +213,26 @@ def sendMessage():
         "answer": result["answer"],
         "sources": sources
     }
+    store_chat_message(chat_thread_id, query, result["answer"])
     return jsonify(response_answer)
+
+@app.route("/api/chat/history", methods=["GET"])
+def getChatHistory():
+    chat_thread_id = request.args.get("chat_thread_id")
+    
+    history = get_chat_history(chat_thread_id)
+    
+    if not history:
+        return jsonify({"error": "No history found for this chat thread"}), 404
+
+    response = []
+    for user_message, bot_response in history:
+        response.append({
+            "user_message": user_message,
+            "bot_response": bot_response
+        })
+    
+    return jsonify(response)
 
 def start_app():
     app.run(host="0.0.0.0", port=8080, debug=True)
