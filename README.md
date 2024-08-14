@@ -5,7 +5,6 @@ This Flask-based backend application allows you to process PDF documents, genera
 
 - [Setup Instructions](#setup-instructions)
 - [API Documentation](#api-documentation)
-- [Postman Collection](#postman-collection)
 - [Potential Improvements](#potential-improvements)
 
 ## Setup Instructions
