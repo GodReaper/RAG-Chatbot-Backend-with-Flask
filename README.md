@@ -5,7 +5,6 @@ This Flask-based backend application allows you to process PDF documents, genera
 
 - [Setup Instructions](#setup-instructions)
 - [API Documentation](#api-documentation)
-- [Postman Collection](#postman-collection)
 - [Potential Improvements](#potential-improvements)
 
 ## Setup Instructions
@@ -21,7 +20,7 @@ Ensure you have the following installed:
 Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/pdf-chatbot-backend.git
+git clone https://github.com/GodReaper/rag-chatbot-backend-with-flask.git
 cd pdf-chatbot-backend
 ```
 
