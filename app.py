@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
+# from langchain_community.llms import Ollama
 from langchain_community.vectorstores import Chroma
 from langchain_community.llms import HuggingFacePipeline
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -16,6 +17,8 @@ app = Flask(__name__)
 
 folder_path = "db"
 device = torch.device('cpu')
+
+
 
 checkpoint = "MBZUAI/LaMini-T5-738M"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
@@ -40,9 +43,11 @@ def llm_pipeline():
 cached_llm = llm_pipeline()
 embedding = FastEmbedEmbeddings()
 
+
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1024, chunk_overlap=80, length_function=len, is_separator_regex=False
 )
+
 
 raw_prompt = PromptTemplate.from_template(
     """ 
@@ -53,6 +58,8 @@ raw_prompt = PromptTemplate.from_template(
     [/INST]
 """
 )
+
+
 
 import sqlite3
 
@@ -180,6 +187,14 @@ def sendMessage():
     if not asset_id:
         return jsonify({"error": "Invalid chat_thread_id"}), 400
 
+    history = get_chat_history(chat_thread_id)
+    history_context = ""
+    for user_message, bot_response in history:
+        history_context += f"User: {user_message}\nAssistant: {bot_response}\n"
+
+    # Add the current query to the context
+    history_context += f"User: {query}\n"
+
     print("Loading vector store")
     vector_store = Chroma(
         persist_directory=f"{folder_path}/{asset_id}",  # Use asset ID to locate the correct vector store
@@ -197,7 +212,7 @@ def sendMessage():
     document_chain = create_stuff_documents_chain(cached_llm, raw_prompt)
     chain = create_retrieval_chain(retriever, document_chain)
 
-    result = chain.invoke({"input": query})
+    result = chain.invoke({"input": query, "context": history_context})
 
     print(result)
 
